@@ -68,7 +68,9 @@ function flipACoin(call) {
   }
   return return_statement;
 }
-app.use((req, res, next) => {
+
+// MIDDLEWARE
+app.use("/app/log/access", (req, res, next) => {
   // res.status(200).send("Hello, World");
   // res.setHeader("text/plain");
   let logdata = {
@@ -101,6 +103,7 @@ app.use((req, res, next) => {
     logdata.referer,
     logdata.useragent
   );
+  res.status(200).json(logdata);
   next();
 });
 
@@ -142,6 +145,8 @@ app.get("/app/flip/call/tails", (req, res) => {
   res.status(200).json({ result: result });
   res.type("text/plain");
 });
+
+app.get("/app/log/access", (req, res) => {});
 
 app.use(function (req, res) {
   res.status(404).end("404 NOT FOUND");
