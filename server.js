@@ -70,7 +70,7 @@ function flipACoin(call) {
 }
 
 // MIDDLEWARE
-app.use("/app/log/access", (req, res, next) => {
+app.use((req, res, next) => {
   // res.status(200).send("Hello, World");
   // res.setHeader("text/plain");
   let logdata = {
