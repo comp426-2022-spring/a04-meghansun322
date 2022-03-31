@@ -1,7 +1,7 @@
 const args = require("minimist")(process.argv.slice(2));
 console.log(args);
 
-if (args.help) {
+if (args.help === true) {
   console.log("server.js [options]");
 
   console.log(
@@ -17,6 +17,24 @@ if (args.help) {
   );
 
   console.log("--help	Return this message and exit.");
+} else {
+  console.log("Help is false");
+}
+
+// LOG
+
+if (args.log == true) {
+  console.log("Log is true");
+} else {
+  console.log("Log is false");
+}
+
+// DEBUG
+
+if (args.debug === true) {
+  console.log("Create endpoint /app/log/access/");
+} else {
+  console.log("False");
 }
 
 const express = require("express");
