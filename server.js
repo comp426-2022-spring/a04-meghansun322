@@ -121,7 +121,7 @@ app.use((req, res, next) => {
   };
 
   const stmt = db.prepare(
-    "INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   );
   const info = stmt.run(
     logdata.remoteaddr,
