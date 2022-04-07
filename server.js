@@ -109,7 +109,7 @@ app.use((req, res, next) => {
   // res.setHeader("text/plain");
   let logdata = {
     remoteaddr: req.ip,
-    remoteuser: req.body.user,
+    remoteuser: req.user,
     time: Date.now(),
     method: req.body.method,
     url: req.body.url,
