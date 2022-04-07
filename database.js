@@ -23,8 +23,7 @@ if (row === undefined) {
           method VARCHA, 
           url VARCHAR, 
           protocol VARCHAR, 
-          httpversion VARCHAR, 
-          secure VARCHAR, 
+          httpversion VARCHAR,   
           status INTEGER, 
           referer VARCHAR, 
           useragent VARCHAR );

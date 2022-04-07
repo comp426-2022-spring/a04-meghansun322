@@ -1,24 +1,28 @@
+// Require minimist module
 const args = require("minimist")(process.argv.slice(2));
+// See what is stored in the object produced by minimist
 console.log(args);
+// Store help text
+const help = `
+server.js [options]
 
-if (args.help === true) {
-  console.log("server.js [options]");
+--port	Set the port number for the server to listen on. Must be an integer
+            between 1 and 65535.
 
-  console.log(
-    "--port	Set the port number for the server to listen on. Must be an integer between 1 and 65535."
-  );
+--debug	If set to true, creates endlpoints /app/log/access/ which returns
+            a JSON access log from the database and /app/error which throws 
+            an error with the message "Error test successful." Defaults to 
+            false.
 
-  console.log(
-    "--debug	If set to `true`, creates endlpoints /app/log/access/ which returns a JSON access log from the database and /app/error which throws an error with the message `Error test successful.` Defaults to `false`."
-  );
+--log		If set to false, no log files are written. Defaults to true.
+            Logs are always written to database.
 
-  console.log(
-    "--log		If set to false, no log files are written. Defaults to true. Logs are always written to database."
-  );
-
-  console.log("--help	Return this message and exit.");
-} else {
-  console.log("Help is false");
+--help	Return this message and exit.
+`;
+// If --help or -h, echo help text to STDOUT and exit
+if (args.help || args.h) {
+  console.log(help);
+  process.exit(0);
 }
 
 // LOG
@@ -27,14 +31,6 @@ if (args.log == true) {
   console.log("Log is true");
 } else {
   console.log("Log is false");
-}
-
-// DEBUG
-
-if (args.debug === true) {
-  console.log("Create endpoint /app/log/access/");
-} else {
-  console.log("False");
 }
 
 const express = require("express");
@@ -118,14 +114,13 @@ app.use((req, res, next) => {
     url: req.body.url,
     protocol: req.body.protocol,
     httpversion: req.body.httpVersion,
-    secure: req.body.secure,
     status: res.body.statusCode,
     referer: req.body.headers["referer"],
     useragent: req.body.headers["user-agent"],
   };
 
   const stmt = db.prepare(
-    "INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, secure, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
   );
   const info = stmt.run(
     logdata.remoteaddr,
@@ -135,7 +130,6 @@ app.use((req, res, next) => {
     logdata.url,
     logdata.protocol,
     logdata.httpversion,
-    logdata.secure,
     logdata.status,
     logdata.referer,
     logdata.useragent
@@ -147,6 +141,22 @@ app.use((req, res, next) => {
 const server = app.listen(port, () => {
   console.log(`App is running on port ${port}`);
 });
+
+// DEBUG
+
+if (args.debug === true) {
+  // Returns all records on access log
+  console.log("Create endpoint /app/log/access/");
+  app.get("/app/log/access/", (req, res) => {
+    const stmt = db.prepare("SELECT * FROM accesslog").all();
+    res.status(200).json(stmt);
+  });
+  app.get("/app/error", (req, res) => {
+    throw new Error("Error Test Successful.");
+  });
+} else {
+  console.log("Debug is False");
+}
 
 app.get("/app", (req, res) => {
   res.status(200).end("OK");
@@ -182,8 +192,6 @@ app.get("/app/flip/call/tails", (req, res) => {
   res.status(200).json({ result: result });
   res.type("text/plain");
 });
-
-app.get("/app/log/access", (req, res) => {});
 
 app.use(function (req, res) {
   res.status(404).end("404 NOT FOUND");
