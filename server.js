@@ -25,20 +25,21 @@ if (args.help || args.h) {
   process.exit(0);
 }
 
-// LOG
-
-if (args.log == true) {
-  console.log("Log is true");
-} else {
-  console.log("Log is false");
-}
-
 const express = require("express");
 const morgan = require("morgan");
 const db = require("./database.js");
 
 const app = express();
 app.use(morgan("tiny"));
+
+// LOG
+
+if (args.log == true) {
+  const WRITESTREAM = fs.createWriteStream("access.log", { flags: "a" });
+  app.use(morgan("combined", { stream: WRITESTREAM }));
+} else {
+  console.log("Server Is Not Creating a Log File.");
+}
 
 const port = args.port || process.env.PORT || 5000;
 
@@ -120,7 +121,7 @@ app.use((req, res, next) => {
   };
 
   const stmt = db.prepare(
-    "INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
+    "INSERT INTO accesslog (remoteaddr, remoteuser, time, method, url, protocol, httpversion, status, referer, useragent) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
   );
   const info = stmt.run(
     logdata.remoteaddr,
