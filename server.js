@@ -150,7 +150,7 @@ if (args.debug === true) {
   console.log("Create endpoint /app/log/access/");
   app.get("/app/log/access/", (req, res) => {
     const stmt = db.prepare("SELECT * FROM accesslog").all();
-    res.status(200).json(stmt);
+    res.status(200).send(stmt);
   });
   app.get("/app/error", (req, res) => {
     throw new Error("Error Test Successful.");
