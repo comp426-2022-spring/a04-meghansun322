@@ -116,8 +116,8 @@ app.use((req, res, next) => {
     protocol: req.protocol,
     httpversion: req.httpVersion,
     status: res.statusCode,
-    referer: req.body.headers["referer"],
-    useragent: req.body.headers["user-agent"],
+    referer: req.headers["referer"],
+    useragent: req.headers["user-agent"],
   };
 
   const stmt = db.prepare(
