@@ -108,8 +108,8 @@ app.use((req, res, next) => {
   // res.status(200).send("Hello, World");
   // res.setHeader("text/plain");
   let logdata = {
-    remoteaddr: req.body.ip,
-    remoteuser: req.boyd.user,
+    remoteaddr: req.ip,
+    remoteuser: req.body.user,
     time: Date.now(),
     method: req.body.method,
     url: req.body.url,
