@@ -108,16 +108,16 @@ app.use((req, res, next) => {
   // res.status(200).send("Hello, World");
   // res.setHeader("text/plain");
   let logdata = {
-    remoteaddr: req.body.ip,
-    remoteuser: req.body.user,
+    remoteaddr: req.ip,
+    remoteuser: req.user,
     time: Date.now(),
-    method: req.body.method,
-    url: req.body.url,
-    protocol: req.body.protocol,
-    httpversion: req.body.httpVersion,
-    status: res.body.statusCode,
-    referer: req.body.headers["referer"],
-    useragent: req.body.headers["user-agent"],
+    method: req.method,
+    url: req.url,
+    protocol: req.protocol,
+    httpversion: req.httpVersion,
+    status: res.statusCode,
+    referer: req.headers["referer"],
+    useragent: req.headers["user-agent"],
   };
 
   const stmt = db.prepare(
